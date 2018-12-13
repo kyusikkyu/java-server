@@ -11,13 +11,13 @@ import java.util.Collections;
 import java.util.Date;
 
 public class MainServer {
-	public static final int PORT = 5000;
+    public static final int PORT = 5000;
     public static final String IP = "54.180.95.149";
-   
+
     ArrayList<User> clients;
     User uData;
 
-   
+
     private ServerSocket serverSocket = null;
 
     public MainServer() {
@@ -27,10 +27,10 @@ public class MainServer {
     }
 
     public static void main(String[] args) {
-        new MainServer().start(); 
+        new MainServer().start();
     }
 
-    
+
     private void start() {
 
         try {
@@ -44,18 +44,18 @@ public class MainServer {
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("서버 시작 : 클라접속");
-                
-                consoleLog(socket.toString());
-                new MultiThread(socket).start(); 
 
+                consoleLog(socket.toString());
+                new MultiThread(socket).start();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    } 
+    }
 
-    
+
     class MultiThread extends Thread {
 
         Socket socket = null;
@@ -68,7 +68,7 @@ public class MainServer {
         public MultiThread(Socket socket) {
             this.socket = socket;
 
-           
+
             try {
                 in = new DataInputStream(socket.getInputStream());
                 out = new DataOutputStream(socket.getOutputStream());
@@ -82,23 +82,23 @@ public class MainServer {
         public void run() {
 
             try {
-               
-                mac = in.readUTF();  
-               
+
+                mac = in.readUTF();
+
                 System.out.println("접속자 정보들  : " + mac);
-              
+
                 String[] filter;
                 filter = mac.split("@");
 
                 uData = new User(socket, Integer.parseInt(filter[0]), filter[1], out);
                 clients.add(uData);
                 consoleLog("(추가)");
-                
+
                 System.out.println(filter[1] + " 님이 " + filter[0] + " 번 방에 입장하셨습니다.");
 
                 while (in != null) {
                     try {
-                        temp = in.readUTF(); 
+                        temp = in.readUTF();
                         String[] filt;
                         filt = temp.split("@");
                         if (filt[3].equals("destroy")) {
@@ -128,17 +128,17 @@ public class MainServer {
             }
         }
 
-       
+
         void sendMsg(String msg) {
             consoleLog("// sendMsg 시작");
-            
+
             String[] filt1 = msg.split("@");
 
-           
+
             SimpleDateFormat mFormat = new SimpleDateFormat("aa hh:mm");
 
-            consoleLog("// 클라 사이즈 : "+clients.size());
-            
+            consoleLog("// 클라 사이즈 : " + clients.size());
+
             for (int i = 0; i < clients.size(); i++) {
                 try {
                     if (Integer.parseInt(filt1[0]) == clients.get(i).roomNo) {
@@ -162,7 +162,7 @@ public class MainServer {
                                 } else {
                                     out.writeUTF(filt1[1] + "@" + filt1[3] + "@" + time);
                                 }
-                            } else { 
+                            } else {
                                 out.writeUTF(filt1[1] + "@" + "요청이 종료되었습니다.");
                                 clients.remove(i);
                             }
@@ -178,8 +178,8 @@ public class MainServer {
                     e.printStackTrace();
                 }
             }
-        } 
-    } 
+        }
+    }
 
     private static void consoleLog(String log) {
         System.out.println("[server " + Thread.currentThread().getId() + "] " + log);
