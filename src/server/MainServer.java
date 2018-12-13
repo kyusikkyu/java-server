@@ -12,70 +12,50 @@ import java.util.Date;
 
 public class MainServer {
 	public static final int PORT = 5000;
-    // 5»ç¹«½Ç
-//    public static final String IP = "192.168.0.139";
-//    public static final String IP = "192.168.0.21";
-    // Áı
-//    public static final String IP = "192.168.200.128";
     public static final String IP = "54.180.95.149";
-    // 3»ç¹«½Ç
-//    public static final String IP = "192.168.0.81";
-
-    // Á¢¼ÓÀÚ Á¤º¸¸¦ ÀúÀåÇÒ ¸®½ºÆ®
+   
     ArrayList<User> clients;
     User uData;
 
-    // ¼­¹ö ¼ÒÄ¹ ( ¼­ºñ½º¿ë ¼ÒÄÏ )
+   
     private ServerSocket serverSocket = null;
 
     public MainServer() {
-        // ¿¬°áºÎ¿¡¼­ ¸®½ºÆ® »ı¼º
         clients = new ArrayList<>();
 
-        // clients µ¿±âÈ­
         Collections.synchronizedList(clients);
     }
 
     public static void main(String[] args) {
-        new MainServer().start(); // ¾²·¹µåÀÇ ½ÃÀÛ
+        new MainServer().start(); 
     }
 
-    // ( Á¢¼Ó ) ¸ŞÀÎÇÔ¼ö¿¡¼­ ½ÃÀÛÇÏ´Â ¸Ş¼Òµå
+    
     private void start() {
 
         try {
-            // 1. ¼­¹ö ¼ÒÄÏ »ı¼º
             serverSocket = new ServerSocket();
-            consoleLog("¼­¹ö ¼ÒÄ¹ »ı¼º : Á¢¼Ó ´ë±âÁß");
+            consoleLog("ì„œë²„ ì†Œìº£ ìƒì„± : ì ‘ì† ëŒ€ê¸°ì¤‘");
 
-            // 2. ¹ÙÀÎµù
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
             serverSocket.bind(new InetSocketAddress(IP, PORT));
-            consoleLog("¿¬°á ±â´Ù¸² - " + IP + ":" + PORT);
+            consoleLog("ì—°ê²° ê¸°ë‹¤ë¦¼ - " + IP + ":" + PORT);
 
-            // 3. ¿äÃ» ´ë±â
             while (true) {
-                Socket socket = serverSocket.accept(); //Á¢¼Ó ´ë±âÁß   ( ´ë±âÇÏ°í ÀÖ´Ù°¡ µé¾î¿À¸é ¼ÒÄÏÀ» ¸¸µé°í )
-                System.out.println("¼­¹ö ½ÃÀÛ : Å¬¶óÁ¢¼Ó");
-                // Å¬¶ó¿¡¼­ Á¢¼ÓÇÏ°Ô µÇ¸é Åë½ÅÈ¸¼±ÀÌ ¸¸µé¾îÁö¸é¼­  µ¥ÀÌÅÍ¸¦ ÁÖ°í ¹ŞÀ» ¼ö ÀÖ´Ù.
-
-                // ¾²·¹µå¿¡¼­ °´Ã¼¸¦ ÁÖ°í¹ŞÀ» Stream »ı¼ºÀÚ¸¦ ¼±¾ğÇÑ´Ù. ( »ı¼ºÀÚ )
-                // run¿¡¼­  Á¢¼ÓÇÑ ÁÖ¼Ò¸¦ ¹Ş¾Æ¿Í Ãâ·ÂÇÏ°í Å¬¶óÀÌ¾ğÆ®¿¡ Á¤º¸¸¦ ³Ñ°ÜÁÖ°í clients¿¡°Ô ip ÁÖ¼Ò mac ÁÖ¼Ò¸¦ º¸³½´Ù .
-
-                // »ç¿ëÀÚ°¡ µé¾î¿Ã¶§¸¶´Ù ¾²·¹µå¸¦ »ı¼º¹× ½ÇÇà
-                //( ¼­¹öÀÇ ¼º´ÉÀÌ ÁÁ¾Æ¾ß°ÙÁö  100¸íÀÌ µé¾î¿À¸é ¾²·¹µå°¡ 100°³°¡ µ¹ÅÂ´Ï±î )
+                Socket socket = serverSocket.accept();
+                System.out.println("ì„œë²„ ì‹œì‘ : í´ë¼ì ‘ì†");
+                
                 consoleLog(socket.toString());
-                new MultiThread(socket).start(); // MultiThread ÀÇ run()½ÇÇà
-            }
+                new MultiThread(socket).start(); 
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    } //  start() ³¡
+    } 
 
-    // ³»ºÎÅ¬·¡½º ( »ç¿ëÀÚ°¡ Á¢¼ÓÇÒ¶§¸¶´Ù  ¾²·¹µå¸¦ »ı¼ºÇØÁÖ´Â Å¬·¡½º )
+    
     class MultiThread extends Thread {
 
         Socket socket = null;
@@ -88,7 +68,7 @@ public class MainServer {
         public MultiThread(Socket socket) {
             this.socket = socket;
 
-            // µ¥ÀÌÅÍ ÀÔÃâ·ÂÀ» À§ÇÑ ½ºÆ®¸² ½ÇÇà
+           
             try {
                 in = new DataInputStream(socket.getInputStream());
                 out = new DataOutputStream(socket.getOutputStream());
@@ -102,76 +82,27 @@ public class MainServer {
         public void run() {
 
             try {
-                // Ã³À½¿¡ ÇÑ¹ø¸¸ ¹ŞÀ»°Çµ¥ ÀÌ¶§ Á¤º¸¸¦ °¡Áö°í ¿ÀÀÚ !
-                mac = in.readUTF();  //¼ö½Å ( Å¬¶ó°¡ ±ÛÀ» ¾²¸é ¼­¹ö·Î ¿Â´Ù )   Å¬¶ó - ¼­¹ö - Å¬¶ó
-
-                // ÃÊ±â¿¡ ÇÑ¹ø¸¸ Á¢¼ÓÀÚÀÇ Á¤º¸¸¦ ¹Ş´Â°Í.
-                System.out.println("Á¢¼ÓÀÚ Á¤º¸µé  : " + mac);
-
-                // ¸®½ºÆ®¿¡ Ãß°¡ ( Å¬¶óÀÌ¾ğÆ®ÀÇ Á¤º¸¸¦ ÀúÀå ¾ÆÀÌµğ¸¦ key·Î ¾²ÀÚ )
+               
+                mac = in.readUTF();  
+               
+                System.out.println("ì ‘ì†ì ì •ë³´ë“¤  : " + mac);
+              
                 String[] filter;
                 filter = mac.split("@");
 
-                //Å¬¶óÀÌ¾ğÆ®ÀÇ Á¤º¸¸¦ ¸¸µé¾î¼­ ¸®½ºÆ®¿¡ Ãß°¡ ÁØºñ
                 uData = new User(socket, Integer.parseInt(filter[0]), filter[1], out);
                 clients.add(uData);
-                consoleLog("(Ãß°¡)");
-                // Ã¹ µî·Ï
-//                if (clients.size() == 0) {
-//                    clients.add(uData);
-//                }
-
-                // ( ±âÁ¸ ¹æ¿¡ ÀÖ´Â ¾ÆÀÌµğ°¡ ÀÖ´ÂÁö Å½»öÈÄ  ¾øÀ»½Ã ÀúÀåÇÑ´Ù )
-//                for (int i = 0; i < clients.size(); i++) {
-//                    try {
-//                        // ¹æ¹øÈ£°¡ °°°í
-//                        if (Integer.parseInt(filter[0]) == clients.get(i).roomNo) {
-//
-//                            // °°Àº ¹æ¾È¿¡ ³» ¾ÆÀÌµğ°¡ ÀÖ´Ù (Ãß°¡ X)
-//                            if (filter[1].equals(clients.get(i).Userid)) {
-//                                consoleLog("¹æ¿¡ ÀÌ¹Ì ³»°¡ ÀÖ´Ù");
-//                                break;
-//                            } else {
-//                                if (i == clients.size()-1) {
-//                                    clients.add(uData);
-//                                    consoleLog("¸¶Áö¸·±îÁö Å½»öÇß´Âµ¥ ³»°¡ ¾ø³× (Ãß°¡)");
-//                                }
-//                            }
-//                        } else { // ¹æ¹øÈ£°¡ ´Ù¸£°í
-//
-//                            // °°Àº ¹æ¾È¿¡ ³» ¾ÆÀÌµğ°¡ ÀÖ´Ù (Ãß°¡ X)
-//                            if (filter[1].equals(clients.get(i).Userid)) {
-//                                consoleLog("¹æ¿¡ ÀÌ¹Ì ³»°¡ ÀÖ´Ù");
-//                                break;
-//                            } else {
-//                                if (i == clients.size()-1) {
-//                                    clients.add(uData);
-//                                    consoleLog("¸¶Áö¸·±îÁö Å½»öÇß´Âµ¥ ³»°¡ ¾ø³× (Ãß°¡)");
-//                                }
-//                            }
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-                consoleLog("Á¢¼ÓÇÑ À¯Àú¼ö : " + String.valueOf(clients.size()));
-//                clients.add(uData);
-//                consoleLog("À¯Àú Ãß°¡");
-
-                // Á¢¼ÓÀÚ È®ÀÎ
-                System.out.println(filter[1] + " ´ÔÀÌ " + filter[0] + " ¹ø ¹æ¿¡ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
-
-                // ¸Ş¼¼Áö º¸³»±â ( Å¬¶ó ÂÊÀ¸·Î ¹æ¿¡ Á¢¼ÓÇß´Ù¶ó´Â ¸Ş¼¼ÁöÀÎµ¥ , ³ªÁß¿¡ ´ÜÃ¼ Ã¤ÆÃÀÏ °æ¿ì¿¡  ½á º¸ÀÚ );
-                // **** sendMsg( mac + "Á¢¼Ó");
-
+                consoleLog("(ì¶”ê°€)");
+                
+                System.out.println(filter[1] + " ë‹˜ì´ " + filter[0] + " ë²ˆ ë°©ì— ì…ì¥í•˜ì…¨ìŠµë‹ˆë‹¤.");
 
                 while (in != null) {
                     try {
-                        temp = in.readUTF(); //¼ö½ÅµÈ ¸Ş¼¼Áö
+                        temp = in.readUTF(); 
                         String[] filt;
                         filt = temp.split("@");
                         if (filt[3].equals("destroy")) {
-                            System.out.println("Å¬¶óÁ¾·á?");
+                            System.out.println("í´ë¼ì¢…ë£Œ?");
                             for (int i = 0; i < clients.size(); i++) {
                                 if (clients.get(i).Userid.equals(filt[1])) {
                                     clients.remove(i);
@@ -181,11 +112,11 @@ public class MainServer {
                             out.close();
                             socket.close();
                             this.interrupt();
-                            System.out.println("Å¬¶óÁ¾·á?");
+                            System.out.println("í´ë¼ì¢…ë£Œ?");
                             break;
                         } else {
                             sendMsg(temp);
-                            System.out.println("MultiThread ÀÇ ·± " + temp);
+                            System.out.println("MultiThread ì˜ ëŸ° " + temp);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -195,33 +126,27 @@ public class MainServer {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }//run ÀÇ ³¡
+        }
 
-
-        // ¼­¹ö°¡  Å¬¶óÀÌ¾ğÆ®¿¡°Ô º¸³½´Ù .  ( ±×·ìÀÎ °æ¿ì ±¸ºĞÀÚ¸¦ Áà¼­ ÇÑ´Ù )
+       
         void sendMsg(String msg) {
-            consoleLog("// sendMsg ½ÃÀÛ");
-            // ¹æ¹øÈ£, º¸³½»ç¶÷, ¹Ş´Â »ç¶÷, ¸Ş¼¼Áö
+            consoleLog("// sendMsg ì‹œì‘");
+            
             String[] filt1 = msg.split("@");
 
-            // ¸Ş¼¼Áö Àü¼Û½Ã ³¯Â¥
+           
             SimpleDateFormat mFormat = new SimpleDateFormat("aa hh:mm");
 
-            consoleLog("// Å¬¶ó »çÀÌÁî : "+clients.size());
-            // Å¬¶óÀÌ¾ğÆ®µéÀÇ Á¤º¸¸¦ ¸ğÀº ÁıÇÕ
+            consoleLog("// í´ë¼ ì‚¬ì´ì¦ˆ : "+clients.size());
+            
             for (int i = 0; i < clients.size(); i++) {
                 try {
-                    //  Å¬¶óÀÌ¾ğÆ®µéÀÇ Á¤º¸¸¦ ¸ğÀº ÁıÇÕ¿¡¼­ °°Àº ¹æ¿¡ ÀÖ°í ÀÚ½ÅÀÌ ¾Æ´Ñ »ó´ë¹æ¿¡°Ô º¸³»´Â °æ¿ì¿¡   ¸Ş¼¼Áö¸¦  º¸³½´Ù .
-                    // ¹æ¹øÈ£°¡ °°°í
                     if (Integer.parseInt(filt1[0]) == clients.get(i).roomNo) {
 
-                        // º»ÀÎÀÌ ¾Æ´Ñ ¸ğµç »ç¶÷¿¡°Ô º¸³½´Ù.
                         if (!filt1[1].equals(clients.get(i).Userid)) {
-                            // Å¬¶óÀÌ¾ğÆ®ÀÇ OutputStream À» ÀúÀå
                             OutputStream dos = clients.get(i).output;
                             DataOutputStream out = new DataOutputStream(dos);
 
-                            // ÇöÀç ½Ã°£ ¹Ş¾Æ¿À±â
                             long mNow;
                             Date mDate;
                             mNow = System.currentTimeMillis();
@@ -229,29 +154,22 @@ public class MainServer {
 
                             String time = mFormat.format(mDate);
 
-                            // ÁöÁ¤ÇÑ »ç¶÷¿¡°Ô¸¸ º¸³½´Ù
                             if (filt1[2].equals(clients.get(i).Userid)) {
-                                // Å¬¶óÀÌ¾ğÆ®¿¡ ¸Ş¼¼Áö¸¦ Àü¼Û  ( º¸³½ »ç¶÷°ú, ³»¿ë )
-                                if (filt1[3].equals("¸ÅÄª¼ö¶ô~!") || filt1[3].equals("¼ö¶ôÈ®ÀÎ~!")) {
-//                                    consoleLog("// ¸ÅÄª¼ö¶ô¾Ë¸²");
+                                if (filt1[3].equals("ë§¤ì¹­ìˆ˜ë½~!") || filt1[3].equals("ìˆ˜ë½í™•ì¸~!")) {
                                     out.writeUTF(filt1[1] + "@" + filt1[3] + "@" + time + "@" + filt1[4]);
-                                } else if (filt1[3].equals("dudxhddhkTek~!`")) { // ¿µÅë ¹æ¹øÈ£ Àü´Ş
+                                } else if (filt1[3].equals("dudxhddhkTek~!`")) { // ì˜í†µ ë°©ë²ˆí˜¸ ì „ë‹¬
                                     out.writeUTF(filt1[1] + "@" + filt1[3] + "@" + time + "@" + filt1[4]);
                                 } else {
-//                                    consoleLog("// º¸³»´Â ¸Ş½ÃÁö");
                                     out.writeUTF(filt1[1] + "@" + filt1[3] + "@" + time);
                                 }
-                            } else { // ¿äÃ»ÀÌ ÀÌ¹Ì ¼ö¶ô‰ç´Ù
-//                                consoleLog("// ¿äÃ»ÀÌ ÀÌ¹Ì ¼ö¶ô‰ç´Ù");
-                                out.writeUTF(filt1[1] + "@" + "¿äÃ»ÀÌ Á¾·áµÇ¾ú½À´Ï´Ù.");
-//                                clients.get(i).output.close();
-//                                clients.get(i).userSocket.close();
+                            } else { 
+                                out.writeUTF(filt1[1] + "@" + "ìš”ì²­ì´ ì¢…ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
                                 clients.remove(i);
                             }
 
-                            consoleLog("º¸³½ »ç¶÷ : " + filt1[1]);
-                            consoleLog("º¸³½ ³»¿ë : " + filt1[3]);
-                            consoleLog("º¸³½ ½Ã°£ : " + time);
+                            consoleLog("ë³´ë‚¸ ì‚¬ëŒ : " + filt1[1]);
+                            consoleLog("ë³´ë‚¸ ë‚´ìš© : " + filt1[3]);
+                            consoleLog("ë³´ë‚¸ ì‹œê°„ : " + time);
                         }
 
                     }
@@ -260,8 +178,8 @@ public class MainServer {
                     e.printStackTrace();
                 }
             }
-        } // sendMsg ³¡
-    }  // MultiThread ³¡
+        } 
+    } 
 
     private static void consoleLog(String log) {
         System.out.println("[server " + Thread.currentThread().getId() + "] " + log);
