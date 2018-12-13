@@ -180,6 +180,22 @@ public class MainServer {
             }
         }
     }
+    
+    public class User {
+        Socket userSocket;
+        int roomNo;
+        String Userid;
+        DataOutputStream output;
+
+        public User(Socket userSocket,int roomNo, String UserId, DataOutputStream output) {
+
+            this.userSocket = userSocket;
+            this.roomNo = roomNo;
+            this.Userid = UserId;
+            this.output = output;
+
+        }
+    }
 
     private static void consoleLog(String log) {
         System.out.println("[server " + Thread.currentThread().getId() + "] " + log);
